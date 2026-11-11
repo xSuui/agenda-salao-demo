@@ -289,6 +289,8 @@ function Cartao({
   nova?: boolean;
 }) {
   const [salvando, iniciar] = useTransition();
+  // qual botão foi clicado: só ele mostra "Salvando"
+  const [acaoSalvando, setAcaoSalvando] = useState<string | null>(null);
   const [erro, setErro] = useState<string | null>(null);
 
   const hora = (iso: string) =>
@@ -410,6 +412,7 @@ function Cartao({
   function executar(b: Botao) {
     setPendente(null);
     setErro(null);
+    setAcaoSalvando(b.acao);
     iniciar(async () => {
       const res = await alterarReserva(r.id, b.acao);
       if (res.erro) setErro(res.erro);
@@ -472,7 +475,7 @@ function Cartao({
                   : "text-stone-700 ring-1 ring-stone-200 hover:bg-stone-50"
               }`}
             >
-              {salvando ? (
+              {salvando && acaoSalvando === b.acao ? (
                 <span className="inline-flex items-center gap-1.5">
                   <Girando /> Salvando
                 </span>
